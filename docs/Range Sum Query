@@ -1,0 +1,16 @@
+public class NumArray{
+    private int[] sum;
+    public NumArray(int[] nums){
+        int n = nums.length;
+        sum = new int[n];
+        if(n > 0)   sum[0] = nums[0];
+        for(int i = 1; i < n; i++)  sum[i] = sum[i-1] + nums[i];
+    }
+    public int sumRange(int i, int j){
+        return sum[j] - (i == 0 ? 0 : sum[i-1]);
+    }
+}
+
+
+public class NumMatrix{
+    
