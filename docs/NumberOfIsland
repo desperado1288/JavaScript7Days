@@ -1,38 +1,60 @@
-public List<Integer> numIslands2(int m, int n, int[][] positions) {
-        int[][] board = new int[m][n];
-        List<Integer> list = new ArrayList<>();
-        int num = 0;
-        for(int k = 0; k < positions.length; k++){
-            int i = positions[k][0], j = positions[k][1];
-            List<Integer> templist = new ArrayList<>();
-            if(board[i][j] == 0){
-                board[i][j] = i * n + j + 1;
-                num++;
-                if(i > 0 && board[i-1][j] > 0)  templist.add(board[i-1][j]-1);
-                if(i < m-1 && board[i+1][j] > 0)    templist.add(board[i+1][j]-1);
-                if(j > 0 && board[i][j-1] > 0)  templist.add(board[i][j-1]-1);
-                if(j < n-1 && board[i][j+1] > 0)    templist.add(board[i][j+1]-1);
-                templist.add(board[i][j] - 1);
-                if(templist.size() > 0){
-                    for(int p = 1; p < templist.size(); p++){
-                        if(union(board, templist.get(0)/n, templist.get(0)%n, templist.get(p)/n, templist.get(p)%n, m, n))    num--;
-                    }
-                }
+
+private static class UnionFind{
+    private int[] uf;
+    private int[] sz;
+    private int count = 0;
+    public UnionFind(int n){
+        uf = new int[n];
+        sz = new int[n];
+    }
+    public int size(){return count;}
+    public int getValue(int i){return uf[i];}
+    public void add(int i){
+        uf[i] = i;
+        sz[i] = 1;
+        count++;
+    }
+    public int find(int i){
+        while(uf[i] != i){
+            uf[i] = uf[uf[i]];
+            i = uf[i];
+        }
+        return i;
+    }
+    public void union(int i, int j){
+        i = find(i);    j = find(j);
+        if(i != j){
+            if(sz[i] > sz[j]){
+                uf[j] = i;
+                sz[i] += sz[j];
             }
-            list.add(num);
+            else{
+                uf[i] = j;
+                sz[j] += sz[i];
+            }
+            count--;
         }
-        return list;
     }
-    private int find(int[][] board, int i, int j, int m, int n){
-        while(board[i][j] != i * n + j + 1){
-            int temp = board[i][j] - 1;
-            i = temp / n;
-            j = temp % n;
+}
+private static final int[][] directions = new int[][]{{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+
+public List<Integer> numIslands2(int m, int n, int[][] positions) {
+    List<Integer> list = new ArrayList<>();
+    if(positions == null || m == 0)  return list;
+    UnionFind uf = new UnionFind(m * n + 1);
+    for(int[] pos: positions){
+        int i = pos[0], j = pos[1], newest = i * n + j + 1;
+        if(uf.getValue(newest) == 0){
+            uf.add(newest);
+            for(int[] dir: directions){
+                i += dir[0]; j += dir[1]
+                int index = i * n + j + 1;
+                if(i < 0 || i >= m || j < 0 || j >= n || uf.getValue(index) == 0)   continue;
+                uf.union(newest, index);
+            }
         }
-        return board[i][j] - 1;
+        list.add(uf.size());
     }
-    private boolean union(int[][] board, int i1, int j1, int i2, int j2, int m, int n){
-        int temp1 = find(board, i1, j1, m, n), temp2 = find(board, i2, j2, m, n);
-        board[temp2/n][temp2%n] = board[temp1/n][temp1%n];
-        return temp1 != temp2;
-    }
+    return list;
+}
+    
