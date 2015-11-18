@@ -1,0 +1,33 @@
+public boolean isHappy(int n){
+    HashSet<Integer> set = new HashSet<>();
+    while(n >= 10 && !set.contains(n)){
+        int sum = 0;
+        while(n > 0){
+            int n1 = n % 10;
+            sum += n1 * n1;
+            n = (n - n1) / 10;
+        }
+        n = sum;
+    }
+    return n == 1 || n == 7;
+}
+
+
+O(1) space:
+public boolean isHappy(int n){
+    int fast = n, slow = n;
+    do{
+        slow = squareSum(slow);
+        fast = squareSum(squareSum(fast));
+    }while(slow != fast && slow >= 10 && fast >= 10);
+    return slow < 10 && (slow == 1 || slow == 7) || fast < 10 && (fast == 1 || fast == 7);
+}
+public int squareSum(int n){
+    int sum = 0;
+    while(n > 0){
+        int n1 = n % 10;
+        sum += n1 * n1;
+        n = (n - n1) / 10;
+    }
+    return sum;
+}
