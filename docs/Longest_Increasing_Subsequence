@@ -1,0 +1,36 @@
+//Patience Sorting
+public int lengthOfLIS(int[] nums){
+    if(nums == null || nums.length == 0)    return 0;
+    int n = nums.length, pile = 0;
+    int[] piles = new int[n];
+    for(int num: nums){
+        int i = binarySearch(piles, 0, pile, num);
+        if(i == pile)   pile++;
+        piles[i] = num;
+    }
+    return pile;
+}
+public int binarySearch(int[] nums, int i, int j, int target){//j exclusive
+    while(i < j){
+        int mid = i + (j - i >> 1);
+        if(nums[mid] < target)  i = mid + 1;
+        else    j = mid;
+    }
+    return i;
+}
+
+
+//DP
+public int lengthOfLIS(int[] nums){
+    if(nums == null || nums.length == 0)    return 0;
+    int max = 1, n = nums.length;
+    int[] dp = new int[n];
+    Arrays.fill(dp, 1);
+    for(int i = n - 2; i >= 0; i--){
+        for(int j = i + 1; j < n; j++){
+            if(nums[j] > nums[i])   dp[i] = Math.max(dp[i], dp[j] + 1);
+        }
+        max = Math.max(max, dp[i]);
+    }
+    return max;
+}
