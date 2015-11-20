@@ -1,3 +1,60 @@
+Array Range -- Mutable:
+public class NumArray{
+    private static class SegmentTreeNode{
+        SegmentTreeNode left = null, right = null;
+        int sum = 0, start, end;
+        public SegmentTreeNode(int s, int e){
+            start = s;
+            end = e;
+        }
+    }
+    
+    SegmentTreeNode root;
+    public NumArray(int[] nums) {
+        root = buildTree(nums, 0, nums.length - 1);
+    }
+    
+    private SegmentTreeNode buildTree(int[] nums, int i, int j){
+        if(i > j)   return null;
+        SegmentTreeNode rt = new SegmentTreeNode(i, j);
+        if(i == j)  rt.sum = nums[i];
+        else{
+            int mid = i + (j - i >> 1);
+            rt.left = buildTree(nums, i, mid);
+            rt.right = buildTree(nums, mid+1, j);
+            rt.sum = rt.left.sum + rt.right.sum;
+        }
+        return rt;
+    }
+    
+    void update(int i, int val){
+        updateTree(root, i, val);
+    }
+    
+    void updateTree(SegmentTreeNode node, int i, int val){
+        int s = node.start, e = node.end;
+        if(s == e)  node.sum = val;
+        else{
+            int mid = s + (e - s >> 1);
+            if(i <= mid)    updateTree(node.left, i, val);
+            else    updateTree(node.right, i, val);
+            node.sum = node.left.sum + node.right.sum;
+        }
+    }
+    
+    public int sumRange(int i, int j) {
+        return sumRangeTree(root, i, j);
+    }
+    
+    private int sumRangeTree(SegmentTreeNode node, int i, int j){
+        if(node.start == i && node.end == j)    return node.sum;
+        int mid = node.start + (node.end - node.start >> 1);
+        if(j <= mid)    return sumRangeTree(node.left, i, j);
+        else if(i > mid)    return sumRangeTree(node.right, i, j);
+        else    return sumRangeTree(node.left, i, mid) + sumRangeTree(node.right, mid+1, j);
+    }
+}
+
 Array Range:
 public class NumArray{
     private int[] sum;
