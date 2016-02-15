@@ -1,6 +1,7 @@
 function printObjectProperty(myObject) {
   //Write your code here
-    console.log("{ type: '" + myObject.type + "', model: '" + myObject.model + "', color: '" + myObject.color + "' }");
+    //console.log("{ type: '" + myObject.type + "', model: '" + myObject.model + "', color: '" + myObject.color + "' }");
+    console.log(myObject);
 } 
 
 // The below code is to show how to create an Object. 
