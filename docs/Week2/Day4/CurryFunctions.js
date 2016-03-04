@@ -14,7 +14,8 @@ function processData(input) {
     let totalPressure = particleHeight;
 
     console.log(totalPressure);
-
+    //should be same as
+    console.log(pressure(g)(m)(h));
 } 
 
 process.stdin.resume();
